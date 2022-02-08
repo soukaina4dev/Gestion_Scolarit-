@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.projetscolarite">
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SerieN2">
+
+        <activity android:name="com.android.projetscolarite.Filiere_Activity"></activity>
+        <activity android:name="com.android.projetscolarite.Etudiant_activity"></activity>
+        <activity android:name="com.android.projetscolarite.Module_activity"></activity>
+        <activity android:name="com.android.projetscolarite.Evaluation_activity"></activity>
+        <activity android:name="com.android.projetscolarite.Bulletin_activity"></activity>
+        <activity android:name="com.android.projetscolarite.ajouterFiliere"></activity>
+        <activity android:name="com.android.projetscolarite.ajouterModule"></activity>
+        <activity android:name="com.android.projetscolarite.list_Modules"></activity>
+        <activity android:name="com.android.projetscolarite.ajouterEtudiant"></activity>
+        <activity android:name="com.android.projetscolarite.ajouterInscription"></activity>
+        <activity android:name="com.android.projetscolarite.list_Etudiants"></activity>
+        <activity android:name="com.android.projetscolarite.list_notes"></activity>
+        <activity android:name="com.android.projetscolarite.List_Bulletin"></activity>
+        <activity android:name="com.android.projetscolarite.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

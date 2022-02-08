@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Gestion de Scolarité</string>
+    <string name="price">10$</string>
+    <string name="prodName">Label</string>
+    <string name="qteProd">QTE</string>
+    <string name="purchase">Buy</string>
+    <string name="prodNum">ID</string>
+    <string name="dateOperation">Date</string>
+    <string name="price_string">Price</string>
+</resources>
