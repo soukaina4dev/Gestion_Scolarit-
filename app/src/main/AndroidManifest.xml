@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.projetscolarite">
+
+    <!-- Declare the permission to use system alert windows -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SerieN2">
 
+        <!-- Declare the activities in the application -->
         <activity android:name="com.android.projetscolarite.Filiere_Activity"></activity>
         <activity android:name="com.android.projetscolarite.Etudiant_activity"></activity>
         <activity android:name="com.android.projetscolarite.Module_activity"></activity>
@@ -25,8 +29,10 @@
         <activity android:name="com.android.projetscolarite.List_Bulletin"></activity>
         <activity android:name="com.android.projetscolarite.MainActivity">
             <intent-filter>
+                <!-- Declare the main action for the activity -->
                 <action android:name="android.intent.action.MAIN" />
 
+                <!-- Declare the launcher category for the activity -->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
