@@ -19,29 +19,36 @@ import com.android.projetscolarite.Models.Module;
 import java.util.ArrayList;
 
 public class MyDBHelper extends SQLiteOpenHelper {
-
+ // Define column names for tables
     public static final String id_fil = "id_fil";
     public static final String id_mod = "id_mod";
     public static final String id_etu = "id_etu";
     public static final String CNE = "CNE";
 
     public MyDBHelper(@Nullable Context context) {
-        super(context, "gestion_scolarite",null,  1);
+        super(context, "gestion_scolarite", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Create Filiere table
         db.execSQL("CREATE TABLE Filiere (id_fil INTEGER NOT NULL PRIMARY KEY autoIncrement,intitule TEXT NOT NULL);");
+        // Create Etudiant table
         db.execSQL("CREATE TABLE  Etudiant(id_etu INTEGER NOT NULL PRIMARY KEY autoIncrement, CNE TEXT NOT NULL ,Nom TEXT NOT NULL ,Prenom TEXT NOT NULL );");
+        // Create Module table
         db.execSQL("CREATE TABLE Module (id_mod INTEGER NOT NULL PRIMARY KEY autoIncrement,Nom TEXT NOT NULL);");
+        // Create Evaluation table
         db.execSQL("CREATE TABLE Evaluation (id_mod INTEGER NOT NULL,id_etu INTEGER NOT NULL ,Note REAL NOT NULL ,FOREIGN KEY (id_etu) REFERENCES Etudiant (id_etu) ON UPDATE CASCADE ON DELETE SET NULL,FOREIGN KEY (id_mod) REFERENCES Module (id_mod) ON UPDATE CASCADE ON DELETE SET NULL);");
+        // Create Planning table
         db.execSQL("CREATE TABLE Plannig (id_mod INTEGER NOT NULL,id_fil INTEGER NOT NULL ,Niveau TEXT NOT NULL , semestre INTEGER NOT NULL, FOREIGN KEY (id_fil) REFERENCES Filiere (id_fil) ON UPDATE CASCADE ON DELETE SET NULL,FOREIGN KEY (id_mod) REFERENCES Module (id_mod) ON UPDATE CASCADE ON DELETE SET NULL);");
+        // Create Inscription table
         db.execSQL("CREATE TABLE Inscription(id_etu INTEGER NOT NULL,id_fil INTEGER NOT NULL ,Niveau TEXT NOT NULL, semestre INTEGER NOT NULL, FOREIGN KEY (id_fil) REFERENCES Filiere (id_fil) ON UPDATE CASCADE ON DELETE SET NULL,FOREIGN KEY (id_etu) REFERENCES Etudiant (id_etu) ON UPDATE CASCADE ON DELETE SET NULL);");
 
-
+        // Insert initial data into Filiere table
         db.execSQL("INSERT INTO Filiere(intitule) VALUES('MIPC'),('GEGM'),('MIP'),('BCG');");
     }
 
+    // Add a new Filiere to the database
     public long ajouterFiliere(Filiere filiere) throws SQLException {
         SQLiteDatabase  db =  this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -49,7 +56,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return db.insertOrThrow("Filiere",null,contentValues);
     }
 
-
+// delete a Filiere from the database
     public void supprimerFiliere(Filiere filiere) throws SQLException {
         SQLiteDatabase db =  this.getWritableDatabase();
         int id = getIdFiliere(filiere.getIntitule());
@@ -72,6 +79,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
         }
     }
 
+
+    // Retrieves the name of the student with the given CNE (student identifier).
     public String getEtudiant(String cne) throws  SQLException{
         SQLiteDatabase myDB = this.getReadableDatabase();
         Cursor getNoteId = myDB.rawQuery("select Nom,Prenom from Etudiant where CNE = '"+cne+"'",null);
@@ -85,6 +94,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         }
     }
 
+    // Retrieves all the filières (courses of study).
     public ArrayList<Filiere> getAllFilieres() throws SQLException {
         SQLiteDatabase  db =  this.getReadableDatabase();
         ArrayList<Filiere> filieres = new ArrayList<Filiere>();
@@ -97,14 +107,16 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cursor.close();
         return filieres;
     }
-
+    
+// Adds a module to the database and returns the ID of the newly inserted row.
     public long ajouterModule(Module module) throws SQLException {
         SQLiteDatabase  db =  this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("Nom", module.getNom());
         return db.insertOrThrow("Module",null,contentValues);
     }
-
+    
+// Adds a planning entry to the database and returns the ID of the newly inserted row.
     public long ajouterPlanning(int id_mod,int id_fil, String nv,int semsetre) throws SQLException {
         SQLiteDatabase  db =  this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -115,7 +127,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return db.insertOrThrow("Plannig",null,contentValues);
     }
 
-
+// Retrieves all the modules for a specific filière, level, and semester.
     public ArrayList<Module> getAllModules(String filiere,String nv,int semestre) throws SQLException {
         SQLiteDatabase  db =  this.getReadableDatabase();
         ArrayList<Module> modules = new ArrayList<Module>();
@@ -131,7 +143,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
     //ORDER BY Nom ASC
     //Module,Plannig WHERE Plannig.id_mod = module.id_mod AND Plannig.Niveau = '"+nv+"' and Plannig.id_fil = '"+id_fil+"'
-//INNER JOIN Plannig ON Plannig.id_mod = module.id_mod WHERE Plannig.Niveau = '"+nv+"' and Plannig.id_fil = '"+id_fil+"'
+    //INNER JOIN Plannig ON Plannig.id_mod = module.id_mod WHERE Plannig.Niveau = '"+nv+"' and Plannig.id_fil = '"+id_fil+"'
+    
+    // Retrieves the ID of a module based on its name
     public int getIdModule(String nom) throws  SQLException{
         SQLiteDatabase myDB = this.getReadableDatabase();
         Cursor getNoteId = myDB.rawQuery("select id_mod from Module where intitule = '"+nom+"'",null);
@@ -143,6 +157,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         }
     }
 
+    // Retrieves the ID of a student based on their CNE
     public int getIdEtudiant(String cne) throws  SQLException{
         SQLiteDatabase myDB = this.getReadableDatabase();
         Cursor getNoteId = myDB.rawQuery("select id_etu from Etudiant where CNE = '"+cne+"'",null);
@@ -154,6 +169,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
         }
     }
 
+
+    // Deletes a module from the database
     public void supprimerModule(Module module) throws SQLException {
         SQLiteDatabase db =  this.getWritableDatabase();
         int id = getIdModule(module.getNom());
@@ -164,7 +181,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
             Log.i("delete plzzzz", String.valueOf(getIdFiliere(module.getNom())));
         }
     }
-
+    
+    // Adds a student to the database
     public long ajouterEtudiant(Etudiant etudiant) throws SQLException {
         //String CNE, String Nom,String Prenom, String Niveau, int id_fil
         SQLiteDatabase  db =  this.getWritableDatabase();
@@ -175,6 +193,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return db.insertOrThrow("Etudiant",null,contentValues);
     }
 
+    // Adds an inscription to the database
     public long ajouterInscription(Inscription inscription) throws SQLException {
         //int id_etu, int id_fil,String Niveau,int semestre
         SQLiteDatabase  db =  this.getWritableDatabase();
@@ -186,6 +205,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return db.insertOrThrow("Inscription",null,contentValues);
     }
 
+    // Deletes a student from the database
     public void supprimerEtudiant(Etudiant etudiant) throws SQLException {
         Log.i("delete plzzzz", String.valueOf(etudiant.getId_etu()));
         SQLiteDatabase db =  this.getWritableDatabase();
@@ -194,6 +214,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         Log.i("delete plzzzz", String.valueOf(etudiant.getId_etu()));
     }
 
+    // Retrieves all students enrolled in a specific program, level, and semester
     public ArrayList<Etudiant> getAllEtudiants(String filiere,String nv,int semestre) throws SQLException {
         SQLiteDatabase  db =  this.getReadableDatabase();
         ArrayList<Etudiant> etudiants = new ArrayList<Etudiant>();
@@ -207,7 +228,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cursor.close();
         return etudiants;
     }
-
+    
+    // Adds an evaluation for a student and a module to the database
     public long ajouterEvaluation(int id_mod,String cne, double note) throws SQLException {
         SQLiteDatabase  db =  this.getWritableDatabase();
         int id_etu = getIdEtudiant(cne);
@@ -218,6 +240,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return db.insertOrThrow("Evaluation",null,contentValues);
     }
 
+    // Retrieves all evaluation notes for a student in a specific program, level, and semester
     public ArrayList<Evaluation> getAllNotes(String cne,String filiere,String nv,int semestre) throws SQLException {
         SQLiteDatabase  db =  this.getReadableDatabase();
         ArrayList<Evaluation> evaluations = new ArrayList<Evaluation>();
@@ -233,6 +256,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return evaluations;
     }
 
+    //Calculates the average of evaluation notes for a student in a specific program, level, and semester
     public double getMoyenne(String cne,String filiere,String nv,int semestre) throws SQLException {
         SQLiteDatabase  db =  this.getReadableDatabase();
         double moyenne = 0;
@@ -248,6 +272,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return moyenne;
     }
 
+    // Modifies an evaluation note for a student and a module in the database
     public void modifierNote(int mod_id,String cne, double note) throws SQLException {
         SQLiteDatabase  db =  this.getWritableDatabase();
         Log.i("cne", String.valueOf(cne));
@@ -257,7 +282,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
         contentValues.put("Note", note);
         db.execSQL("UPDATE Evaluation SET Note = '"+note+"'WHERE id_etu = '"+etu_id+"' AND id_mod = '"+mod_id+"'");
     }
-
+    
+// Calculates the average evaluation note for a program in a specific level and semester
     public double getMoyenneFiliere(String filiere,String nv,int semestre) throws SQLException {
         SQLiteDatabase  db =  this.getReadableDatabase();
         ArrayList<Etudiant> etudiants = new ArrayList<Etudiant>();
@@ -275,7 +301,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
 
 
-
+    // Handles the database upgrade process
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
